@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "Coproductions",
+    "password": null,
+    "database": "express_gallery_database",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "Coproductions",
+    "password": null,
+    "database": "express_gallery_database",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+     "username": "Coproductions",
+    "password": null,
+    "database": "express_gallery_database",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}
