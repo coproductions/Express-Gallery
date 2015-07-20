@@ -1,10 +1,25 @@
-form(method="POST", action="/gallery/"+ id)
-  input(type='hidden',value='PUT', name='_method')
-  p author
-    input(type="text", name="author")
-  p link
-    input(type="text", name="link")
-  p description
-    input(type="text", name="description")
-  p
-    input(type="submit")
+<!DOCTYPE html>
+html(lang="en")
+head
+  meta(charset="UTF-8")
+  title Document
+body
+  h1 single
+  div
+    img.singleImage(src= link)
+    .photoby photo by:&nbsp;
+      span.author= author
+    .description= description
+   div.editForm
+    form(method="POST", action="/gallery/"+ id)
+      input(type='hidden',value='PUT', name='_method')
+      p author
+        input(type="text", name="author", value='#{author}')
+      p link
+        input(type="text", name="link", value='#{link}')
+      p description
+        input(type="text", name="description",value='#{description}')
+      p
+        input(type="submit")
+  button
+    a(href='/') home

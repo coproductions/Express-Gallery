@@ -66,6 +66,7 @@ app.put('/gallery/:id', function(req, res){
         {author:req.body.author,link:req.body.link,description:req.body.description},
         {where:{id:req.params.id}})
         .then(function(test){
+          res.render('single',picture.dataValues);
           console.log('successful edit');
           // res.render('single',params.id)
 
@@ -73,6 +74,7 @@ app.put('/gallery/:id', function(req, res){
             console.log('error tryieng to edit');
         });
   }).catch(function(){
+    res.render('picnotfound',{id : req.params.id});
     console.log('could not find the id')
   });
 });
@@ -86,7 +88,7 @@ app.delete('/gallery/:id', function(req, res){
     .then(function(picture){
       picture.destroy()
       .then(function(){
-        res.send('delete successful')
+        res.redirect('/')
         console.log('delete successful')
       })
       .catch(function(){
@@ -94,8 +96,8 @@ app.delete('/gallery/:id', function(req, res){
         console.log('could not delete')
       })
     }).catch(function(){
-      res.send('could not find the photo')
-      console.log('could not find the photo')
+      res.render('picnotfound',{id : req.params.id});
+      console.log('could not find the photo');
     })
 
 });

@@ -10,4 +10,14 @@ body
     .photoby photo by:&nbsp;
       span.author= author
     .description= description
+   div
+form(method="POST", action="/gallery/"+ id)
+  input(type='hidden',value='DELETE', name='_method')
+  button delete
+
+button
+  a(href= '/gallery/'+id+'/edit') edit
+
+  button
+    a(href='/') home
 

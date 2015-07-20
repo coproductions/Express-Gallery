@@ -18,6 +18,7 @@
   "homepage": "https://github.com/coproductions/Express-Gallery#readme",
   "dependencies": {
     "body-parser": "^1.13.2",
+    "morgan": "^1.6.1",
     "pg": "^4.4.0",
     "pg-hstore": "^2.3.2",
     "sequelize": "^3.4.1"

@@ -5,11 +5,14 @@ head
   title Gallery
 body
   .galleryContainer
+    button
+      a(href='/new_photo') add a photo
     ul.galleryList
       each picture in pictures
         li.galleryListItem
           .galleryItemDiv
-          img.singleImage(src= picture.dataValues.link)
+            a(href= '/gallery/'+ picture.id)
+              img.singleImage(src= picture.link)
           div
             span= picture.dataValues.author
             p= picture.dataValues.description
