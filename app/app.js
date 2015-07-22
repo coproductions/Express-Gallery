@@ -4,6 +4,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var morgan = require('morgan');
+var redactor = require('../lib/redactor.js')
 
 
 
@@ -34,6 +35,9 @@ app.use(methodOverride(function(req, res){
 
 
 
+app.use('/gallery',redactor);
+
+
 app.get('/', function (req, res) {
   db.Picture.findAll().then(function(pictures){
     res.render('gallery',{pictures:pictures})
@@ -44,7 +48,13 @@ app.get('/gallery/:id', function(req, res) {
   db.Picture.findById(req.params.id).then(function(picture) {
   // project will be an instance of Project and stores the content of the table entry
     if(picture){
-      res.render('single',picture.dataValues);
+      db.Picture.findAll().then(function(pictures){
+
+        res.render('single',{
+          singlePic : picture.dataValues,
+          allPics : pictures
+        });
+      })
     }else{
       res.render('picnotfound',{id : req.params.id});
     }
@@ -53,9 +63,13 @@ app.get('/gallery/:id', function(req, res) {
 
 app.post('/gallery', function(req, res){
   db.Picture.create({author:req.body.author,link:req.body.link,description:req.body.description})
-  .then(function(task){
-    console.log(task)
-    res.render('single',task.dataValues)
+    .then(function(task){
+      db.Picture.findAll().then(function(pictures){
+        res.render('single',{
+          singlePic : task.dataValues,
+          allPics : pictures
+      });
+    });
   });
 });
 
@@ -66,7 +80,13 @@ app.put('/gallery/:id', function(req, res){
         {author:req.body.author,link:req.body.link,description:req.body.description},
         {where:{id:req.params.id}})
         .then(function(test){
-          res.render('single',picture.dataValues);
+          db.Picture.findAll().then(function(pictures){
+            res.render('single',{
+              singlePic : picture.dataValues,
+              allPics : pictures
+              });
+
+          })
           console.log('successful edit');
           // res.render('single',params.id)
 
