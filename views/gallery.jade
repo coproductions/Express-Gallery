@@ -1,13 +1,8 @@
-include mixin
-<!DOCTYPE html>
-html(lang="en")
-head
-  link(rel="stylesheet", href="/css/styles.css")
-  meta(charset="UTF-8")
-  meta(name='viewport',content='width=device-width', initial-scale='1')
+extends ./layout.jade
+block title
   title Gallery
-body
 
+block content
   -if(!user)
     a(href='/login')
       button login
@@ -23,7 +18,7 @@ body
     .banner
       .row.bannerTopRow
         div.small-12.medium-6.large-6.columns.leftBanner
-          mixin title
+          h1 gallery
         div.medium-6.large-6.columns.rightBanner.hide-for-small
           span It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
       .row.hide-for-small
@@ -40,10 +35,7 @@ body
             div
               span.label= picture.dataValues.author
               p= picture.dataValues.description
-  script(src="/bower_components/jquery/dist/jquery.min.js")
-  script(src="/bower_components/foundation/js/foundation.min.js")
-  script.
-    $(document).foundation();
+
 
 
 
