@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+html(lang="en")
+head
+  link(rel="stylesheet", href="/css/styles.css")
+  meta(charset="UTF-8")
+  title Document
+body
+  .Form
+    form(action="/login" method="POST")
+      p username
+        input(type="text" name="username")
+      p password
+        input(type="password" name="password")
+      button(type="sumbit" value="log in") login
+
+
+    a(href='/signup')
+      p not yet signed up?
+      //- button(type='button') sign up

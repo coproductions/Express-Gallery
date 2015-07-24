@@ -1,11 +1,14 @@
 var db = require('../models');
 var express = require('express');
 var app = express();
+var session = require('express-session');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var morgan = require('morgan');
-var redactor = require('../lib/redactor.js')
-
+var redactor = require('../lib/redactor.js');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var crypto = require('crypto');
 
 
 db.sequelize.sync();
@@ -18,10 +21,49 @@ app.set('view engine','jade');
 app.set('views','./views');
 
 
+
+
+
 //app settings
 app.use(morgan('dev'));
 app.use(express.static('public'));
 app.use(bodyParser.json());
+
+app.use(session(
+  {
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true
+  }
+));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser(function(user, done) {
+    done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  db.User.findOne({id:id})
+  .then(function(user){
+    done(null, user);
+  });
+});
+
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    db.User.findOne({where:{ username: username }})
+    .then(function(user) {
+      console.log(user.username)
+      console.log('logging password',password)
+      if (user.password !== createHash(password)) {
+        return done(null, false, { message: 'Incorrect password.' });
+      }
+      return done(null, user);
+    });
+  }
+));
 
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(methodOverride(function(req, res){
@@ -33,18 +75,70 @@ app.use(methodOverride(function(req, res){
   }
 }))
 
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/login')
+}
+
+function createHash(password){
+  var shasum = crypto.createHash('sha1');
+  shasum.update(password);
+  return shasum.digest('hex');
+}
+
 
 
 app.use('/gallery',redactor);
 
+app.use(function(req, res, next){
+  app.locals.user = req.user;
+  console.log('what is user',app.locals.user)
+  next();
+});
 
-app.get('/', function (req, res) {
+
+
+app.post('/login',
+  passport.authenticate('local', { successRedirect: '/',
+                                   failureRedirect: '/login'
+                                  })
+);
+
+app.get('/login',function(req,res){
+  res.render('login')
+});
+
+app.get('/logout', function(req,res){
+  req.logout();
+  res.redirect('/');
+})
+
+app.get('/signup',function(req,res){
+  res.render('signup')
+});
+
+app.post('/signup', function(req,res){
+
+  db.User.findOrCreate({where:{username: req.body.username},defaults:{password:createHash(req.body.password)}})
+  .spread(function(user, created){
+    console.log('created user: ',created);
+    if(created){
+      res.redirect('/login')
+    }else{
+      res.render('signup',{username: user.username})
+      // res.send('username: '+req.body.username+' already exists')
+    }
+  })
+});
+
+
+app.get('/',ensureAuthenticated, function (req, res) {
   db.Picture.findAll().then(function(pictures){
     res.render('gallery',{pictures:pictures})
   })
 });
 
-app.get('/gallery/:id', function(req, res) {
+app.get('/gallery/:id',ensureAuthenticated, function(req, res) {
   db.Picture.findById(req.params.id).then(function(picture) {
   // project will be an instance of Project and stores the content of the table entry
     if(picture){
@@ -122,7 +216,7 @@ app.delete('/gallery/:id', function(req, res){
 
 });
 
-app.get('/gallery/:id/edit',function(req, res){
+app.get('/gallery/:id/edit',ensureAuthenticated,function(req, res){
   db.Picture.findById(req.params.id).then(function(picture){
     if(picture){
       res.render('editpicture',picture.dataValues)

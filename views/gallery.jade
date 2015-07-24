@@ -1,21 +1,49 @@
+include mixin
 <!DOCTYPE html>
 html(lang="en")
 head
+  link(rel="stylesheet", href="/css/styles.css")
   meta(charset="UTF-8")
+  meta(name='viewport',content='width=device-width', initial-scale='1')
   title Gallery
 body
+
+  -if(!user)
+    a(href='/login')
+      button login
+    a(href='/signup')
+      button signup
+  -else
+    a(href='/new_photo')
+      button.newPhoto add a photo
+    a(href='/logout')
+      button logout
+
   .galleryContainer
-    button
-      a(href='/new_photo') add a photo
-    ul.galleryList
-      each picture in pictures
-        li.galleryListItem
-          .galleryItemDiv
+    .banner
+      .row.bannerTopRow
+        div.small-12.medium-6.large-6.columns.leftBanner
+          mixin title
+        div.medium-6.large-6.columns.rightBanner.hide-for-small
+          span It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
+      .row.hide-for-small
+        .bannerImageContainer.medium-12.medium-centered.columns
+          //- img.bannerImage(src="http://lorempixel.com/800/200/")
+
+    .galleryList
+      .row
+        each picture in pictures
+          div.small-12.medium-4.large-4.columns.containerDiv
             a(href= '/gallery/'+ picture.id)
-              img.singleImage(src= picture.link)
-          div
-            span= picture.dataValues.author
-            p= picture.dataValues.description
+              .galleryImage
+                img.singleImage(src= picture.link)
+            div
+              span.label= picture.dataValues.author
+              p= picture.dataValues.description
+  script(src="/bower_components/jquery/dist/jquery.min.js")
+  script(src="/bower_components/foundation/js/foundation.min.js")
+  script.
+    $(document).foundation();
 
 
 

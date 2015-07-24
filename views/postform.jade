@@ -1,10 +1,17 @@
-form(method="POST", action="/gallery/")
+<!DOCTYPE html>
+html(lang="en")
+head
+  link(rel="stylesheet", href="/css/styles.css")
+  meta(charset="UTF-8")
+  title Document
+body
+  .Form
+    form(method="POST", action="/gallery/")
 
-  p author
-    input(type="text", name="author")
-  p link
-    input(type="text", name="link")
-  p description
-    input(type="text", name="description")
-  p
-    input(type="submit")
+      p author
+        input(type="text", name="author")
+      p link
+        input(type="text", name="link")
+      p description
+        input(type="text", name="description")
+      button(type="submit") submit
