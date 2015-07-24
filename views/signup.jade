@@ -7,7 +7,10 @@ head
 body
   .Form
     -if(username)
-      p the username: #{username} already exists, try
+      p
+        |the username:&nbsp
+        b #{username} &nbsp
+        |already exists, try&nbsp
         a(href='/login') logging in
     form(action="/signup" method="POST")
       p username
