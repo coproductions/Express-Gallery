@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-html(lang="en")
-head
-  meta(charset="UTF-8")
-  link(rel="stylesheet", href="/css/styles.css")
-  title Document
-body
+extends ./layout.jade
+block title
+  title single
+block content
   h1 single
   .singleContainer
     .row
@@ -37,8 +34,5 @@ body
               div
                 span.label= picture.dataValues.author
                 p= picture.dataValues.description
-  script(src="/bower_components/jquery/dist/jquery.min.js")
-  script(src="/bower_components/foundation/js/foundation.min.js")
-  script.
-    $(document).foundation();
+
 

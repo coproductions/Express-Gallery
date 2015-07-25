@@ -55,8 +55,8 @@ passport.use(new LocalStrategy(
   function(username, password, done) {
     db.User.findOne({where:{ username: username }})
     .then(function(user) {
-      console.log(user.username)
-      console.log('logging password',password)
+      // console.log(user.username)
+      // console.log('logging password',password)
       if (user.password !== createHash(password)) {
         return done(null, false, { message: 'Incorrect password.' });
       }
@@ -75,6 +75,34 @@ app.use(methodOverride(function(req, res){
   }
 }))
 
+// app.use(methodOverride());
+
+function ajaxPull(jsonSource) {
+
+  $.ajax({
+    method: 'GET',
+    url: (jsonSource),
+    dataType: 'json'
+  })
+  .done(function(res) {
+    // console.log('got the data:',res);
+  })
+  .fail(function() {
+    throw new Error('There was a problem with the request.');
+  })
+  .always(function() {
+    //Always update the UI with status
+  });
+}
+
+app.use('/gallery',redactor);
+
+app.use(function(req, res, next){
+  app.locals.user = req.user;
+  // console.log('what is user',app.locals.user)
+  next();
+});
+
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
   res.redirect('/login')
@@ -88,13 +116,6 @@ function createHash(password){
 
 
 
-app.use('/gallery',redactor);
-
-app.use(function(req, res, next){
-  app.locals.user = req.user;
-  console.log('what is user',app.locals.user)
-  next();
-});
 
 
 
@@ -121,7 +142,7 @@ app.post('/signup', function(req,res){
 
   db.User.findOrCreate({where:{username: req.body.username},defaults:{password:createHash(req.body.password)}})
   .spread(function(user, created){
-    console.log('created user: ',created);
+    // console.log('created user: ',created);
     if(created){
       res.redirect('/login')
     }else{
@@ -132,7 +153,7 @@ app.post('/signup', function(req,res){
 });
 
 
-app.get('/',ensureAuthenticated, function (req, res) {
+app.get('/', ensureAuthenticated,function (req, res) {
   db.Picture.findAll().then(function(pictures){
     res.render('gallery',{pictures:pictures})
   })
@@ -159,7 +180,7 @@ app.post('/gallery', function(req, res){
   db.Picture.create({author:req.body.author,link:req.body.link,description:req.body.description})
     .then(function(task){
       db.Picture.findAll().then(function(pictures){
-        res.render('single',{
+        res.send({
           singlePic : task.dataValues,
           allPics : pictures
       });
@@ -168,23 +189,27 @@ app.post('/gallery', function(req, res){
 });
 
 app.put('/gallery/:id', function(req, res){
-  db.Picture.findById(req.params.id)
+  console.log('going into put',req.body)
+  db.Picture.findById(req.body.id)
   .then(function(picture){
+    console.log('found picture and now editind',picture)
     picture.updateAttributes(
         {author:req.body.author,link:req.body.link,description:req.body.description},
         {where:{id:req.params.id}})
         .then(function(test){
-          db.Picture.findAll().then(function(pictures){
-            res.render('single',{
-              singlePic : picture.dataValues,
-              allPics : pictures
-              });
+        //   db.Picture.findAll().then(function(pictures){
+        //     res.render('single',{
+        //       singlePic : picture.dataValues,
+        //       allPics : pictures
+        //       });
 
-          })
-          console.log('successful edit');
-          // res.render('single',params.id)
+        //   })
+        //   console.log('successful edit');
+        //   // res.render('single',params.id)
 
-        }).catch(function(){
+          res.send(test)
+        })
+        .catch(function(){
             console.log('error tryieng to edit');
         });
   }).catch(function(){
@@ -198,11 +223,11 @@ app.get('/new_photo',function(req, res){
 });
 
 app.delete('/gallery/:id', function(req, res){
-    db.Picture.findById(req.params.id)
+    db.Picture.findById(req.body.id)
     .then(function(picture){
       picture.destroy()
       .then(function(){
-        res.redirect('/')
+        res.send(req.body)
         console.log('delete successful')
       })
       .catch(function(){

@@ -1123,11 +1123,11 @@ $label-font-family: $body-font-family;
 // 25. Reveal
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 
-// $include-html-reveal-classes: $include-html-classes;
+$include-html-reveal-classes: $include-html-classes;
 
 // We use these to control the style of the reveal overlay.
-// $reveal-overlay-bg: rgba($black, .45);
-// $reveal-overlay-bg-old: $black;
+$reveal-overlay-bg: rgba($black, .45);
+$reveal-overlay-bg-old: $black;
 
 // We use these to control the style of the modal itself.
 // $reveal-modal-bg: $white;
