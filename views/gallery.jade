@@ -11,6 +11,8 @@ block content
       button login
     a(href='/signup')
       button signup
+
+
   -else
     .clearfix.topbuttons
       a.left(href='#' , data-reveal-id='addImage')
@@ -42,7 +44,23 @@ block content
         p password
           input(type="text", name="password")
         button(type="submit") log in
+      p not a user yet?&nbsp
+        a(href='/signup') sign up
     a( class="close-reveal-modal" aria-label="Close")&#215;
+
+  div(id="signupModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+    .Form
+      form#signUpForm(method="POST", action="/signup")
+        h3 log in
+        p username
+          input(type="text", name="username")
+        p password
+          input(type="text", name="password")
+        button(type="submit") log in
+      p not already a user ?&nbsp
+        a(href='/login') log in
+    a( class="close-reveal-modal" aria-label="Close")&#215;
+
 
 
   .galleryContainer

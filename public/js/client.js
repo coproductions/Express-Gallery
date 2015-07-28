@@ -1,7 +1,6 @@
 $(function(){
 
 
-
   // console.log(user.authenticated)
   $('#addImageForm').submit(function(event){
     event.preventDefault();
@@ -19,20 +18,6 @@ $(function(){
         alert("error")
       });
   });
-
-  // $('#logInForm').submit(function(event){
-  //   event.preventDefault();
-  //   var data = $(this).serialize();
-
-  //   $.post('/login', data)
-  //     .then(function(serverRes){
-  //     })
-  //         .fail(function(err){
-  //       // handle error
-  //       alert("error")
-  //     });
-  // });
-
 
 
   $('.editImageInGalleryForm').submit(function(event){
@@ -110,6 +95,12 @@ function updateGalleryImage(imgData){
   imageDiv.find('.singleImage').attr('src',imgData.link);
   imageDiv.find('.author').text(imgData.author);
   imageDiv.find('.description').text(imgData.description);
+
+  var singleimageDiv = $('#singleImage'+imgData.id);
+  // singleimageDiv.find('.singleImage').attr('src',imgData.link);
+  // singleimageDiv.find('.author').text(imgData.author);
+  // singleimageDiv.find('.description').text(imgData.description);
+  // **************** working on this right now
 
   $('a.close-reveal-modal').trigger('click');
 };

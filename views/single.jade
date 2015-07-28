@@ -2,26 +2,100 @@ extends ./layout.jade
 block title
   title single
 block content
+  -if(!user)
+    a(href='#' , id='loginModalButton',data-reveal-id='logInModal')
+      button login
+    a(href='/signup')
+      button signup
+
+
+  -else
+    .clearfix.topbuttons
+      a.left(href='#' , data-reveal-id='addImage')
+        button.plus +
+      a.right(href='/logout') logout
+
+
+
+  div(id="addImage" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+      .Form
+        form#addImageForm(method="POST", action="/gallery")
+          h3 add an image
+          p author
+            input(type="text", name="author")
+          p link
+            input(type="text", name="link")
+          p description
+            input(type="text", name="description")
+          button(type="submit") submit
+      a( class="close-reveal-modal" aria-label="Close")&#215;
+
+
+  div(id="logInModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+    .Form
+      form#logInForm(method="POST", action="/login")
+        h3 log in
+        p username
+          input(type="text", name="username")
+        p password
+          input(type="text", name="password")
+        button(type="submit") log in
+      p not a user yet?&nbsp
+        a(href='/signup') sign up
+    a( class="close-reveal-modal" aria-label="Close")&#215;
+
+  div(id="signupModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+    .Form
+      form#signUpForm(method="POST", action="/signup")
+        h3 log in
+        p username
+          input(type="text", name="username")
+        p password
+          input(type="text", name="password")
+        button(type="submit") log in
+      p not already a user ?&nbsp
+        a(href='/login') log in
+    a( class="close-reveal-modal" aria-label="Close")&#215;
+
+  div(id="editImageModal"+singlePic.id class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog")
+    .Form
+      form.editImageInGalleryForm(method="POST", action="/gallery/"+ singlePic.id)
+        //- h3 edit an image
+        img(src= singlePic.link)
+        input(type='hidden',value='PUT', name='_method')
+        input(type='hidden',value= singlePic.id, name='id')
+        p author
+          input(type="text", name="author", value= singlePic.author)
+        p link
+          input(type="text", name="link", value= singlePic.link)
+        p description
+          input(type="text", name="description", value= singlePic.description)
+        button(type="submit") submit
+    a( class="close-reveal-modal" aria-label="Close")&#215;
+
+
   h1 single
   .singleContainer
     .row
       .small-12.medium-8.large-8.columns.singlePicDiv
-        img.singleImage(src= singlePic.link)
-        .photoby photo by:&nbsp;
-          span.author= singlePic.author
-        .description= singlePic.description
+        div(id= 'singleImage'+singlePic.id)
+          img.singleImage(src= singlePic.link)
+          .photoby photo by:&nbsp;
+            span.author= singlePic.author
+          .description= singlePic.description
 
         div.deleteForm
           form(method="POST", action="/gallery/"+ singlePic.id)
             input(type='hidden',value='DELETE', name='_method')
             .row
               .small-12.medium-12.columns
-                button delete
-                a(href='/gallery/'+singlePic.id+'/edit')
-                  button(type='button') edit
-
                 a(href='/')
                   button(type='button') home
+        -if(user)
+              button delete
+              a(href='#' , data-reveal-id='editImageModal'+singlePic.id)
+                button.onlyForLogged edit
+
 
 
 

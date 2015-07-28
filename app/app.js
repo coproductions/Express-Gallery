@@ -164,7 +164,7 @@ app.get('/', function (req, res) {
   })
 });
 
-app.get('/gallery/:id',ensureAuthenticated, function(req, res) {
+app.get('/gallery/:id', function(req, res) {
   db.Picture.findById(req.params.id).then(function(picture) {
   // project will be an instance of Project and stores the content of the table entry
     if(picture){
