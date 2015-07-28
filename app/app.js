@@ -104,8 +104,13 @@ app.use(function(req, res, next){
 });
 
 function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(); }
-  res.redirect('/login')
+  console.log('outside if')
+  if (req.isAuthenticated()) {
+    console.log('inside if')
+    return next();
+  }
+  // res.redirect('/login')
+  res.json({showLogInModal:true})
 }
 
 function createHash(password){
@@ -153,7 +158,7 @@ app.post('/signup', function(req,res){
 });
 
 
-app.get('/', ensureAuthenticated,function (req, res) {
+app.get('/', function (req, res) {
   db.Picture.findAll().then(function(pictures){
     res.render('gallery',{pictures:pictures})
   })
@@ -188,7 +193,7 @@ app.post('/gallery', function(req, res){
   });
 });
 
-app.put('/gallery/:id', function(req, res){
+app.put('/gallery/:id',function(req, res){
   console.log('going into put',req.body)
   db.Picture.findById(req.body.id)
   .then(function(picture){
@@ -222,12 +227,14 @@ app.get('/new_photo',function(req, res){
   res.render('postform');
 });
 
-app.delete('/gallery/:id', function(req, res){
+app.delete('/gallery/:id',ensureAuthenticated,function(req, res){
     db.Picture.findById(req.body.id)
     .then(function(picture){
       picture.destroy()
       .then(function(){
+        console.log(req.body)
         res.send(req.body)
+        // res.json(req.body)
         console.log('delete successful')
       })
       .catch(function(){
